@@ -2,17 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseFsm : MonoBehaviour
+interface IFsm
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    void ChangeState(BaseState nextState);
+}
 
-    // Update is called once per frame
-    void Update()
+public class BaseFsm
+{
+    private BaseState currentState;
+    private BaseState nextState;
+
+    public bool isStateRun = false;
+
+    public void ChangeState(BaseState nextState)
     {
-        
+        this.nextState = nextState;
+        if (currentState == nextState) return;
+
+        currentState.Exit();
+        currentState = this.nextState;
+        currentState.Enter();
+
+        isStateRun = true;
+    }
+    public void UpdateStata()
+    {
+        if (isStateRun)
+        {
+            currentState?.Update();
+        }
     }
 }
