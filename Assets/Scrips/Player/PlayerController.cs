@@ -3,10 +3,17 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
 
-interface IStateControl
+public interface IStateControl
 {
     public StateInfo GetStateControlInfo();
     public void ChangeState(int stateIndex);
+    public void UpdateState();
+}
+public enum WhoAmI
+{
+    Player,
+    Monster,
+    Boss
 }
 
 public class StateInfo
@@ -14,6 +21,9 @@ public class StateInfo
     public BaseState[] states;
     public Animator anim;
     public StateInfoSo info;
+
+    public IStateControl owner;
+    public WhoAmI who;
 
     public float maxHp;
     public float currentHp;
@@ -26,11 +36,14 @@ public class StateInfo
 
     public int def;
 
-    public void InfoSetting(BaseState[] newStates, Animator newAnim, StateInfoSo newInfo)
+    public void InfoSetting(BaseState[] newStates, Animator newAnim, StateInfoSo newInfo, WhoAmI iam, IStateControl owner)
     {
         states = newStates;
         anim = newAnim;
         info = newInfo;
+        who = iam;
+        this.owner = owner;
+
         StatSetting();
     }
     private void StatSetting()
@@ -60,27 +73,40 @@ public class PlayerController : MonoBehaviour, IStateControl
         fsm = new BaseFsm();
         playerInfo = new StateInfo();
 
-        BaseState[] newStates = { new Idle(GetStateControlInfo()) };
+        BaseState[] newStates = { new Idle(playerInfo), new Move(playerInfo) };
         StateInfoSo stateInfoSo = Resources.Load<StateInfoSo>("StateData/PlayerStateData");
 
-        playerInfo.InfoSetting(newStates, GetComponent<Animator>(),stateInfoSo);
+        playerInfo.InfoSetting
+            (newStates, 
+            GetComponentInChildren<Animator>(), 
+            stateInfoSo, 
+            WhoAmI.Player,
+            this);
 
     }
 
-    public StateInfo GetStateControlInfo()
+    public StateInfo GetStateControlInfo() //외부에서 플레이어의 모델에 접근하기 위한 메서드
     {
         return playerInfo;
     }
     public void ChangeState(int stateIndex)
     {
-        fsm.isStateRun = false; //상태종료 안내
+        if (stateIndex > (playerInfo.states.Length - 1))
+        {
+            Debug.Log("존재하지 않는 상태에 접근 : states배열 인덱스문제");
+            return;
+        }
+
         fsm.ChangeState(playerInfo.states[stateIndex]); //상태전환 명령전달
+    }
+    public void UpdateState()
+    {
+        fsm.UpdateStata(); //상태에 따른 행동실행
     }
     [Button]
     private void Test()
     {
         playerInfo.TestPrint();
     }
-
 
 }

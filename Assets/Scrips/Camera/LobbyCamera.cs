@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
@@ -14,63 +15,55 @@ public class LobbyCamera : MonoBehaviour
     public GameObject[] camAnchors;
     public float moveDuration;
     private Coroutine moveCor;
-    public CameraState camState;
 
-    private void Awake()
-    {
-        camState = CameraState.Lobby;
-    }
+    public PosAndRot posAndRot;
 
-    public void InjectLobbyEvent(CameraState order)
+    //private void Awake()
+    //{
+    //    CameraController.Instance.lobbyCamEvent += ChangeCam;
+    //}
+    private void Start()
     {
-        camState = order;
-        CameraController.Instance.camEvent += ChangeCam;
+        CameraController.Instance.lobbyCamEvent += ChangeCam;
     }
-    [Button]
-    private void ChangeCam()
+    //[Button]
+    private void ChangeCam(CameraState choice)
     {
         if (moveCor != null) return;
 
-        if (camState == CameraState.Battle) vcam.Priority = unactivePriority;
+        if (choice == CameraState.Battle) //전투 탭으로 가면 카메라 순위를 낮춤;
+        {
+            vcam.Priority = unactivePriority;
+            transform.position =  camAnchors[0].transform.position;
+            transform.rotation = camAnchors[0].transform.rotation;
+            return;
+        }
         else vcam.Priority = activePriority;
 
-        moveCor = StartCoroutine(moveCamTest(GetLobbyCamPos()));
+        moveCor = StartCoroutine(MoveLobbyCam());
     }
 
-    private PosAndRot GetLobbyCamPos() //enum값으로 빠뀌는 카메라의 위치를 구조체로 가져옴
+    private PosAndRot GetLobbyCamPos() //enum값으로 바뀌는 카메라의 위치를 구조체로 가져옴
     {
-        PosAndRot nextPosRot;
-        int index = 0;
-        
-        if (camState != CameraState.Battle) index = (int)camState;
-        else index = 0;
+        int index = (int)CameraController.Instance.currentState;
 
-        nextPosRot.pos = camAnchors[index].transform.position;
-        nextPosRot.rot = camAnchors[index].transform.rotation;
+        posAndRot.Set
+            (transform.position, 
+            camAnchors[index].transform.position, 
+            transform.rotation, 
+            camAnchors[index].transform.rotation);
 
-        return nextPosRot;
+        return posAndRot;
     }
-    private IEnumerator moveCamTest(PosAndRot nextPosRot)
+    private IEnumerator MoveLobbyCam()
     {
-        float timer = 0;
-        Vector3 startPos = transform.position;
-        Quaternion startRot = transform.rotation;
-
-
-        while (timer <= moveDuration)
-        {
-            float t = timer / moveDuration;
-
-            transform.position = Vector3.Lerp(startPos, nextPosRot.pos, t);
-            //Mathf.Lerp로 하면 안됨 왜? 타입에 맞게 해야해서 이건 트렌스폼포지션을 바꾸니 벡터3로 하는게 맞음
-            transform.rotation = Quaternion.Lerp(startRot, nextPosRot.rot, t);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = nextPosRot.pos;
-        transform.rotation = nextPosRot.rot;
-
+        yield return BehaviorManager.Instance.OnMoveLobbyCam(GetLobbyCamPos(), moveDuration);
+        transform.position = posAndRot.targetPos;
+        transform.rotation = posAndRot.targetRot;
         moveCor = null;
+
+        posAndRot.Init();
+
         yield break;
     }
 }

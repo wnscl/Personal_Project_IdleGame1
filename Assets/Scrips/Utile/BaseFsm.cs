@@ -12,8 +12,6 @@ public class BaseFsm
     private BaseState currentState;
     private BaseState nextState;
 
-    public bool isStateRun = false;
-
     public void ChangeState(BaseState nextState)
     {
         this.nextState = nextState;
@@ -23,13 +21,9 @@ public class BaseFsm
         currentState = this.nextState;
         currentState.Enter();
 
-        isStateRun = true;
     }
     public void UpdateStata()
     {
-        if (isStateRun)
-        {
-            currentState?.Update();
-        }
+        currentState?.Update();
     }
 }

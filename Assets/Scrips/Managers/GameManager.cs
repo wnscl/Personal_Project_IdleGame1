@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         isRunning = true;
-        StartCoroutine(GameRepeater());
+        //StartCoroutine(GameRepeater());
     }
     private void Start()
     {

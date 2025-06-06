@@ -11,19 +11,36 @@ public enum Axis
     Z
 }
 
-struct PosAndRot //두개의 자료형을 반환하기 위한 구조체
+public struct PosAndRot //두개의 자료형을 반환하기 위한 구조체 현재 사용처 카메라
 {
-    public Vector3 pos;
-    public Quaternion rot;
+    public Vector3 requesterPos;
+    public Quaternion requesterRot;
+    public Vector3 targetPos;
+    public Quaternion targetRot;
+
+    public void Set(Vector3 requesterPos, Vector3 targetPos, Quaternion requesterRot, Quaternion targetRot) //세팅을 위한 함수
+    {
+        this.requesterPos = requesterPos;
+        this.requesterRot = requesterRot;
+        this.targetPos = targetPos;
+        this.targetRot = targetRot;
+    }
+    public void Init()
+    {
+        requesterPos = Vector3.zero;
+        requesterRot = Quaternion.identity;
+        targetPos = Vector3.zero;
+        targetRot = Quaternion.identity;
+    }
 }
 
 public static class CalculateHelper
 {
     //대상과 대상의 방향벡터를 구함
-    public static Vector3 GetDirection(Vector3 target, Vector3 requester, Axis ignoreAxis = Axis.None) //옵셔널 파라미터 현재 기본값이 none인 상태
+    public static Vector3 GetDirection(GameObject target, GameObject requester, Axis ignoreAxis = Axis.None) //옵셔널 파라미터 현재 기본값이 none인 상태
     {
         Vector3 direction = Vector3.zero;
-        direction = target - requester;
+        direction = (target.transform.position - requester.transform.position);
 
         if (ignoreAxis == Axis.None)
         {
@@ -48,12 +65,16 @@ public static class CalculateHelper
         return direction.normalized;
     }
     //넣어준 방향의 회전값을 구함
-    public static Quaternion GetRotation(Quaternion target, Vector3 direction, Axis ignoreAxis = Axis.None)
+    public static Quaternion GetRotation(GameObject requester, Vector3 direction, Axis aliveAxis = Axis.None)
     {
-        
+        Quaternion rotation = requester.transform.rotation;
+        if (aliveAxis == Axis.None)
+        {
+            rotation = Quaternion.LookRotation(direction);
+        }
 
 
-        return Quaternion.identity;
+        return rotation;
     }
 
     public static float GetDistance(Vector3 target, Vector3 requester, Axis ignoreAxis = Axis.None)

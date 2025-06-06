@@ -14,10 +14,17 @@ public class Idle : BaseState
     }
     public override void Update() 
     {
-
+        
     }
     public override void Exit() 
     { 
 
     }
+
+    private void InitAnim()
+    {
+
+    }
+
+
 }
