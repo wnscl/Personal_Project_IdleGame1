@@ -38,11 +38,12 @@ public class StateInfo
 
     public void InfoSetting(BaseState[] newStates, Animator newAnim, StateInfoSo newInfo, WhoAmI iam, IStateControl owner)
     {
+        this.owner = owner;
+
         states = newStates;
         anim = newAnim;
         info = newInfo;
         who = iam;
-        this.owner = owner;
 
         StatSetting();
     }
@@ -83,6 +84,8 @@ public class PlayerController : MonoBehaviour, IStateControl
             WhoAmI.Player,
             this);
 
+        fsm.InitFsm(playerInfo.states[0]);
+
     }
 
     public StateInfo GetStateControlInfo() //외부에서 플레이어의 모델에 접근하기 위한 메서드
@@ -107,6 +110,8 @@ public class PlayerController : MonoBehaviour, IStateControl
     private void Test()
     {
         playerInfo.TestPrint();
+        ChangeState(1);
+        UpdateState();
     }
 
 }

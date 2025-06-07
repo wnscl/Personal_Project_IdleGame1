@@ -11,7 +11,10 @@ public class BaseFsm
 {
     private BaseState currentState;
     private BaseState nextState;
-
+    public void InitFsm(BaseState firstState)
+    {
+        currentState = firstState;
+    }
     public void ChangeState(BaseState nextState)
     {
         this.nextState = nextState;

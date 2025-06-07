@@ -22,7 +22,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public event Action<GameState> UiActiveEvent; //ui을 끄고 키거나 하는 이벤트
+    public event Action<ScreenState> UiActiveEvent; //ui을 끄고 키거나 하는 이벤트
 
     public void SendMessage_UiActiveEvent()
     {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState
+public enum ScreenState
 {
     Lobby = 0,
     Inventory,
@@ -28,23 +28,38 @@ public class GameCondition : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
-        condition = GameState.Lobby;
+        condition = ScreenState.Lobby;
     }
 
-    private GameState condition;
-    public GameState Condition { get { return condition; } }
+    private ScreenState condition;
+    public ScreenState Condition { get { return condition; } }
 
-    private GameState nextCondition;
-    public GameState NextCondition { get { return nextCondition; } }
+    private ScreenState nextCondition;
+    public ScreenState NextCondition { get { return nextCondition; } }
 
-
-    public event Action nowLobby;
+    /*public event Action nowLobby;
     public event Action nowInventory;
     public event Action nowForge;
     public event Action nowStore;
-    public event Action nowBattle;
+    public event Action nowBattle;*/
 
-    public void ChangeGameCondition(GameState nextState)
+    public event Action<ScreenState> conditionEvent;
+
+    public void ChangeCondition(ScreenState nextState)
+    {
+        if (condition == nextState)
+        {
+            return;
+        }
+        nextCondition = nextState;
+
+        conditionEvent?.Invoke(nextCondition);
+
+        condition = nextState;
+    }
+
+
+    /*public void ChangeGameCondition(ScreenState nextState)
     {
         if (condition == nextState)
         {
@@ -54,28 +69,28 @@ public class GameCondition : MonoBehaviour
         nextCondition = nextState;
         switch (condition)
         {
-            case GameState.Lobby:
+            case ScreenState.Lobby:
                 nowLobby.Invoke();
                 break;
 
-            case GameState.Inventory:
+            case ScreenState.Inventory:
                 nowInventory.Invoke();
                 break;
 
-            case GameState.Forge:
+            case ScreenState.Forge:
                 nowForge.Invoke();
                 break;
 
-            case GameState.Store:
+            case ScreenState.Store:
                 nowStore.Invoke();
                 break;
 
-            case GameState.Battle:
+            case ScreenState.Battle:
                 nowBattle.Invoke();
                 break;
         }
         condition = nextCondition;
-    }
+    }*/
 
 
 }

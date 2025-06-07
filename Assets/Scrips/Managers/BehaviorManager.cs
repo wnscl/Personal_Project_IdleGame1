@@ -23,7 +23,6 @@ public class BehaviorManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-
     private IEnumerator OnMoveInTime(float duration, GameObject requester, GameObject target, Axis ignoreAxis = Axis.None)
     {
         float timer = 0;
@@ -97,7 +96,7 @@ public class BehaviorManager : MonoBehaviour
     {
         StartCoroutine (MoveToNextStage());
     }
-    private IEnumerator MoveToNextStage()
+    public IEnumerator MoveToNextStage()
     {
         Vector3 firstMovePos = CalculateHelper.GetDirection(testObj[(int)nowTestStage], player, Axis.Y);
         Vector3 secondMovePos = CalculateHelper.GetDirection(testObj[(int)nextTestStage], player, Axis.Y);

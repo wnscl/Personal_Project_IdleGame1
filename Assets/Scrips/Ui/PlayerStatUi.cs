@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,13 @@ enum UiStat
 
 public class PlayerStatUi : MonoBehaviour
 {
-    [SerializeField] private GameObject[] valueBars;
+    [SerializeField] private GameObject[] valueBarGroup;
+
+    [SerializeField] private TextMeshProUGUI[] statTextGroup;
 
     private void ChangeValueBar(UiStat choice)
     {
-        Image barImage = valueBars[(int)choice].GetComponentInChildren<Image>();
+        Image barImage = valueBarGroup[(int)choice].GetComponentInChildren<Image>();
 
         
     }

@@ -6,7 +6,7 @@ public class Move : BaseState
 {
     public Move(StateInfo info) : base(info) { }
 
-
+    //public Coroutine
     public override void Enter()
     {
         info.anim.SetBool("isMove", true);
