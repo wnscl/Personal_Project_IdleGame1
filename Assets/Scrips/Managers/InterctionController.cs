@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
@@ -5,36 +6,27 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class GameCondition
-{
-    public static bool isInLobby = true;
-}
 
 public class InterctionController : MonoBehaviour
 {
-    public string order;
 
-    public Button placeChangeButton;
-
-    [Button]
-    private void TestCamChange()
+    public void OnClickPlaceButton()
     {
-        //CameraController.Instance.ChangeView(order);
-    }
-
-
-    public void OnChangePlace()
-    {
-        int camIndex = 0;
-        if (GameCondition.isInLobby)
+        //처음 로비상태 버튼 누르면 전투화면으로
+        //다시 누르면 로비화면으로
+        if (GameCondition.Instance.Condition == GameState.Battle)
         {
-            camIndex = 4;
-            GameCondition.isInLobby = false;
+            GameCondition.Instance.ChangeGameCondition(GameState.Lobby);
+        }
+        else
+        {
+            GameCondition.Instance.ChangeGameCondition(GameState.Battle);
         }
 
-        UiManager.Instance.ChangeUiOfPlace();
-        CameraController.Instance.ChangeCamState(camIndex);
-        CameraController.Instance.ChangeViewOfPlace();
+    }
+    public void OnClickInvenButton()
+    {
+
     }
 
 }

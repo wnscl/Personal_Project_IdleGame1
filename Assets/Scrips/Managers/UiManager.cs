@@ -22,21 +22,11 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public event Action<GameOptionText> lobbyUiEvent;
-    public event Action InvenUiEvent;
+    public event Action<GameState> UiActiveEvent; //ui을 끄고 키거나 하는 이벤트
 
-    private bool isLobby;
-
-    public void ChangeUiOfPlace()
+    public void SendMessage_UiActiveEvent()
     {
-        GameOptionText choice = GameOptionText.ToLobby;
-        if (GameCondition.isInLobby)
-        {
-            choice = GameOptionText.ToStage;
-        }
-
-        lobbyUiEvent?.Invoke(choice);
-
+        UiActiveEvent?.Invoke(GameCondition.Instance.Condition);
     }
 
 }

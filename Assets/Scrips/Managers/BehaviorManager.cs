@@ -23,21 +23,6 @@ public class BehaviorManager : MonoBehaviour
             Destroy(this.gameObject);
         }
     }
-    public IEnumerator OnMoveLobbyCam(PosAndRot posAndRot, float moveDuration)
-    {
-        float timer = 0;
-        while (timer <= moveDuration)
-        {
-            float t = timer / moveDuration;
-
-            transform.position = Vector3.Lerp(posAndRot.requesterPos, posAndRot.targetPos, t);
-            //Mathf.Lerp로 하면 안됨 왜? 타입에 맞게 해야해서 이건 트렌스폼포지션을 바꾸니 벡터3로 하는게 맞음
-            transform.rotation = Quaternion.Lerp(posAndRot.requesterRot, posAndRot.targetRot, t);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        yield break;
-    }
 
     private IEnumerator OnMoveInTime(float duration, GameObject requester, GameObject target, Axis ignoreAxis = Axis.None)
     {

@@ -1,10 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using Cinemachine;
 using NaughtyAttributes;
 using UnityEngine;
 
+public enum TestLobbyCam
+{
+    L,
+    I,
+    F,
+    S,
+    B
+}
 
 public class LobbyCamera : MonoBehaviour
 {
@@ -18,20 +27,19 @@ public class LobbyCamera : MonoBehaviour
 
     public PosAndRot posAndRot;
 
-    //private void Awake()
-    //{
-    //    CameraController.Instance.lobbyCamEvent += ChangeCam;
-    //}
     private void Start()
     {
-        CameraController.Instance.lobbyCamEvent += ChangeCam;
+        GameCondition.Instance.nowLobby += ChangeCam;
+        GameCondition.Instance.nowInventory += ChangeCam;
+        GameCondition.Instance.nowBattle += ChangeCam;
     }
     //[Button]
-    private void ChangeCam(CameraState choice)
+    private void ChangeCam()
     {
         if (moveCor != null) return;
 
-        if (choice == CameraState.Battle) //전투 탭으로 가면 카메라 순위를 낮춤;
+        if (GameCondition.Instance.Condition == GameState.Lobby && GameCondition.Instance.NextCondition == GameState.Battle)
+        //메인 화면에서 전투 화면으로 가면 카메라 순위를 낮춤 + 카메라 코루틴 사용 안하고 초기화;
         {
             vcam.Priority = unactivePriority;
             transform.position =  camAnchors[0].transform.position;
@@ -45,8 +53,11 @@ public class LobbyCamera : MonoBehaviour
 
     private PosAndRot GetLobbyCamPos() //enum값으로 바뀌는 카메라의 위치를 구조체로 가져옴
     {
-        int index = (int)CameraController.Instance.currentState;
-
+        int index = (int)GameCondition.Instance.Condition;
+        if (isTest)
+        {
+            index = (int)testState;
+        }
         posAndRot.Set
             (transform.position, 
             camAnchors[index].transform.position, 
@@ -57,7 +68,50 @@ public class LobbyCamera : MonoBehaviour
     }
     private IEnumerator MoveLobbyCam()
     {
-        yield return BehaviorManager.Instance.OnMoveLobbyCam(GetLobbyCamPos(), moveDuration);
+        yield return OnMoveLobbyCam(GetLobbyCamPos(), moveDuration);
+        transform.position = posAndRot.targetPos;
+        transform.rotation = posAndRot.targetRot;
+        moveCor = null;
+
+        posAndRot.Init();
+
+        yield break;
+    }
+    private IEnumerator OnMoveLobbyCam(PosAndRot posAndRot, float moveDuration)
+    {
+        float timer = 0;
+        while (timer <= moveDuration)
+        {
+            float t = timer / moveDuration;
+
+            transform.position = Vector3.Lerp(posAndRot.requesterPos, posAndRot.targetPos, t);
+            //Mathf.Lerp로 하면 안됨 왜? 타입에 맞게 해야해서 이건 트렌스폼포지션을 바꾸니 벡터3로 하는게 맞음
+            transform.rotation = Quaternion.Lerp(posAndRot.requesterRot, posAndRot.targetRot, t);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        yield break;
+    }
+
+
+
+
+
+    ////////////////////////////////////테스트용 코드들
+    public TestLobbyCam testState;
+    public bool isTest;
+    [Button]
+    private void TestCamMove()
+    {
+        if (moveCor != null)
+        {
+            return;
+        }
+        moveCor = StartCoroutine(TestMoveLobbyCam());
+    }
+    private IEnumerator TestMoveLobbyCam()
+    {
+        yield return OnMoveLobbyCam(GetLobbyCamPos(), moveDuration);
         transform.position = posAndRot.targetPos;
         transform.rotation = posAndRot.targetRot;
         moveCor = null;
@@ -73,33 +127,3 @@ public class LobbyCamera : MonoBehaviour
 
 
 
-
-
-/*private IEnumerator moveCam(PosAndRot_L nextPosRot)
-    {
-        switch (camState)
-        {
-            case CameraState.Lobby:
-                transform.position = nextPosRot.pos;
-                transform.rotation = nextPosRot.rot;
-                break;
-
-            case CameraState.Inventory:
-                transform.position = nextPosRot.pos;
-                transform.rotation = nextPosRot.rot;
-                break;
-
-            case CameraState.Forge:
-
-                break;
-
-            case CameraState.Store:
-
-                break;
-
-            case CameraState.Battle:
-                break;
-        }
-
-        yield break;  
-    }*/

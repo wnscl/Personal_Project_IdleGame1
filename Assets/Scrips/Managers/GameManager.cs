@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState
+public enum GameState1
 {
     OnStage,
     OffStage,
@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     bool isRunning = false;
     bool isStageRunning = false;
 
-    public GameState nowState;
+    public GameState1 nowState;
 
 
     private void Awake()
@@ -32,12 +32,12 @@ public class GameManager : MonoBehaviour
         {
             switch (nowState)
             {
-                case GameState.OnStage:
+                case GameState1.OnStage:
                     yield return new WaitUntil(() => StageStart());
                     yield return new WaitUntil(() => isStageRunning);
                     break;
 
-                case GameState.OffStage:
+                case GameState1.OffStage:
                     yield return new WaitUntil(() => StageEnd());
                     yield return new WaitUntil(() => isStageRunning);
                     break;  

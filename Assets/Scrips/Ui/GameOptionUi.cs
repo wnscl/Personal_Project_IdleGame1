@@ -1,51 +1,78 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using static System.Net.Mime.MediaTypeNames;
 
-public enum GameOptionText
-{
-    ToLobby,
-    ToStage
-}
 
 public class GameOptionUi : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI[] texts;
-    [SerializeField] private GameObject[] objs;
+    [SerializeField] private GameObject[] optionPanels;
+    [SerializeField] private TextMeshProUGUI[] optionTexts;
+
+    private Coroutine myCor;
 
     private void Awake()
     {
-        UiManager.Instance.lobbyUiEvent += ChangeLobbyText;
-        UiManager.Instance.lobbyUiEvent += Close;
+        //UiManager.Instance.UiActiveEvent += ActiveOptionPanel;
     }
-    private GameObject ChoiceObject(GameOptionText choice)
+    private void Start()
     {
-        GameObject sendObj = objs[(int)choice];
+        GameCondition.Instance.nowLobby += ActiveOptionPanel;
+        GameCondition.Instance.nowLobby += ChangePlaceButtonText;
 
-        return sendObj;
+        GameCondition.Instance.nowBattle += ActiveOptionPanel;
+        GameCondition.Instance.nowBattle += ChangePlaceButtonText;
     }
-    private void ChangeLobbyText(GameOptionText choice)
-    {
-        texts[(int)choice].text = choice.ToString();
-    }
-    public void Close(GameOptionText choice)
-    {
-        StartCoroutine(CloseAndOpen(ChoiceObject(choice)));
-    }
-    private IEnumerator CloseAndOpen(GameObject target)
-    {
 
-        float timer = 0;
-        target.SetActive(false);
-        while (timer < 0.3f)
+    private void ActiveOptionPanel()
+    {
+        //모든 패널을 잠시 끄고 화면 전환을 기다림
+        //필요한 패널을 켜줌 (내부 텍스트라거나 값을 바꾼 후에)
+
+        if (myCor != null) return;
+
+        //ChangeButtonText(nowCondition);
+
+        myCor = StartCoroutine(UnActiveAllPanel());
+    }
+
+    private IEnumerator UnActiveAllPanel()
+    {
+        float timer = 0f;
+        foreach (GameObject panel in optionPanels)
         {
-            timer += Time.deltaTime;
-            yield return null;
+            panel?.SetActive(false);
         }
-        target.SetActive(true);
+
+        while (timer < 0.5f)
+        {
+            yield return null;
+
+            timer += Time.deltaTime;
+        }
+
+        foreach (GameObject panel in optionPanels)
+        {
+            panel?.SetActive(true);
+        }
+        myCor = null;
         yield break;
     }
+    private void ChangePlaceButtonText()
+    {
+        if (GameCondition.Instance.Condition == GameState.Battle)
+        {
+            optionTexts[0].text = "ToLobby";
+        }
+        else
+        {
+            optionTexts[0].text = "ToStage";
+        }
+    }
+    
+
 }
