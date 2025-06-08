@@ -10,9 +10,9 @@ using UnityEngine.UI;
 public class InterctionController : MonoBehaviour
 {
     public bool isTest;
+
     public void OnClickPlaceButton()
     {
-        
         if (GameCondition.Instance.Condition == ScreenState.Battle)
         {
             GameCondition.Instance.ChangeCondition(ScreenState.Lobby);
@@ -27,13 +27,24 @@ public class InterctionController : MonoBehaviour
     }
     public void OnClickInvenButton()
     {
-        if (GameCondition.Instance.Condition == ScreenState.Inventory)
+        ChangeGameScreen(ScreenState.Inventory);
+    }
+    public void OnClickForgeButton()
+    {
+        ChangeGameScreen(ScreenState.Forge);
+    }
+    public void OnClickStoreButton()
+    {
+        ChangeGameScreen(ScreenState.Store);
+    }
+    public void ChangeGameScreen(ScreenState state)
+    {
+        if (GameCondition.Instance.Condition == state)
         {
             GameCondition.Instance.ChangeCondition(ScreenState.Lobby);
             return;
         }
-        GameCondition.Instance.ChangeCondition(ScreenState.Inventory);
-
+        GameCondition.Instance.ChangeCondition(state);
     }
 
 }

@@ -12,7 +12,9 @@ public class GameOptionUi : MonoBehaviour
 {
     [SerializeField] private GameObject[] lobbyUis;
     [SerializeField] private GameObject[] InvenUis;
-    [SerializeField] private GameObject[] BattleUis; 
+    [SerializeField] private GameObject[] ForgeUis;
+    [SerializeField] private GameObject[] StoreUis;
+    [SerializeField] private GameObject[] BattleUis;
     //하드코딩할 필요 없이 원하는 ui오브젝트인스턴스의 포인트를 만들어서
     //게임의 상황에 따라 원하는 ui들만 쓸 수 있게
     [SerializeField] private TextMeshProUGUI[] optionTexts;
@@ -25,6 +27,8 @@ public class GameOptionUi : MonoBehaviour
         panels = new Dictionary<ScreenState, GameObject[]>();
         panels.Add(ScreenState.Lobby, lobbyUis);
         panels.Add(ScreenState.Inventory, InvenUis);
+        panels.Add(ScreenState.Forge, ForgeUis);
+        panels.Add(ScreenState.Store, StoreUis);
         panels.Add(ScreenState.Battle, BattleUis);
     }
     public void ChangeOptionUi(ScreenState state)

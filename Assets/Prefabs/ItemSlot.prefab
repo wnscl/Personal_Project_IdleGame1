@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7962589202961601513}
   - component: {fileID: 3243329738659796387}
   - component: {fileID: 5389295957309955829}
+  - component: {fileID: 3725030034700511302}
   m_Layer: 5
   m_Name: SlotImage
   m_TagString: Untagged
@@ -75,6 +76,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3725030034700511302
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2035317575451530720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f0596fc0420a0145b23aaf86be42b8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 5389295957309955829}
+  rect: {fileID: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0.8627451}
+  mouseOnColor: {r: 0.627451, g: 0.8235294, b: 0.39215687, a: 0.8627451}
 --- !u!1 &3704033322074037422
 GameObject:
   m_ObjectHideFlags: 0
