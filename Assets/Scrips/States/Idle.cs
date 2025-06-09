@@ -30,6 +30,7 @@ public class Idle : BaseState
 
     private void InitIdle()
     {
+        info.currentState = EntityState.Idle;
         info.anim.SetBool("isMove", false);
     }
 

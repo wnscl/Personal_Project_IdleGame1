@@ -44,43 +44,55 @@ public class StageManager : MonoBehaviour
 
     public GameObject[] stages;
 
-    public event Action<Stages> stageEvent_Start;
-    public event Action stageEvent_End;
-
     public event Action<Stages> stageEvent;
+    public event Action<Stages> stageEvent_End;
 
     public int stageCount;
-    public bool isStageRun = false;
-    public bool isFirstStart = true;
+    public bool isStageRun = true;
 
     public GameObject player;
     public GameObject enemy;
 
-    [Button]
-    public void ChangeStage()
+    public MonsterFactory mobFactory;
+
+    public void ChangeStage(IStateControl control)
     {
+        EntityInfo entityInfo = control.GetEntityInfo();
+        //여기에 종료로직
+        if (entityInfo.entityType == EntityType.Player)
+        {
+            StartCoroutine(OnStageReset(control));
+            return;
+        }
         StartCoroutine(OnStageChange());
     }
     public IEnumerator OnStageChange()
     {
+        Destroy(enemy);
         isStageRun = false;
         stageEvent?.Invoke(nextStage);
         yield return new WaitForSeconds(3f);
 
-        if (!isFirstStart)
-        {
-            stageCount++;
-            nowStage = (Stages)(stageCount % 4);
-            nextStage = (Stages)((stageCount + 1) % 4);
-        }
-    
+        stageCount++;
+        nowStage = (Stages)(stageCount % 4);
+        nextStage = (Stages)((stageCount + 1) % 4);
+
         isStageRun = true;
-
-        if (isFirstStart)
-        {
-            isFirstStart = false;
-        }
     }
-
+    public IEnumerator OnStageReset(IStateControl control)
+    {
+        control.ChangeState((int)EntityState.Dead);
+        isStageRun = false;
+        stageCount = 0;
+        nowStage = Stages.stage1;
+        nextStage = Stages.stage2;
+        Destroy(enemy);
+        stageEvent_End?.Invoke(nowStage);
+        yield return new WaitForSeconds(5f);
+        isStageRun = true;
+        EntityInfo entityInfo = control.GetEntityInfo();
+        entityInfo.currentHp = entityInfo.maxHp;
+        mobFactory.ResetMob();
+    }
 
 }

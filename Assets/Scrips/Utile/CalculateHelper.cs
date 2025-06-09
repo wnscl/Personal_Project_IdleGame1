@@ -39,6 +39,11 @@ public static class CalculateHelper
     //대상과 대상의 방향벡터를 구함
     public static Vector3 GetDirection(GameObject target, GameObject requester, Axis ignoreAxis = Axis.None) //옵셔널 파라미터 현재 기본값이 none인 상태
     {
+        if (target == null || requester == null)
+        {
+            return Vector3.zero;
+        }
+
         Vector3 direction = Vector3.zero;
         direction = (target.transform.position - requester.transform.position);
 

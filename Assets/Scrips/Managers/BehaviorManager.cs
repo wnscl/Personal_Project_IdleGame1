@@ -110,6 +110,10 @@ public class BehaviorManager : MonoBehaviour
     }
     private IEnumerator OnAttackInTime(AttackAppoint appoint)
     {
+        if (appoint.requester == null || appoint.target == null)
+        {
+            yield break;
+        }
 
         yield return new WaitForSeconds(appoint.attackDuration);
 
@@ -161,14 +165,42 @@ public class BehaviorManager : MonoBehaviour
     }
     public void OnBasicAttack(AttackAppoint attackAppoint,IStateControl control)
     {
-        StartCoroutine(BasicAttack(attackAppoint, control));
+        EntityInfo entityinfo = control.GetEntityInfo();
+
+        entityinfo.coroutine = StartCoroutine(BasicAttack(attackAppoint, control));
     }
     public IEnumerator BasicAttack(AttackAppoint attackAppoint, IStateControl control)
     {
         yield return OnAttackInTime(attackAppoint);
-        control.ChangeState((int)EntityState.Idle);
+        
+        EntityInfo entityInfo = control.GetEntityInfo();
+
+        entityInfo.coroutine = null;
+        
+        if (entityInfo.currentState != EntityState.Dead)
+        {
+            control.ChangeState((int)EntityState.Idle);
+        }
+
 
         yield break;
+    }
+    public void OnReSpawn(IStateControl control)
+    {
+        EntityInfo entityinfo = control.GetEntityInfo();
+
+        entityinfo.coroutine = StartCoroutine(ReSpawn(control));
+    }
+    public IEnumerator ReSpawn(IStateControl control)
+    {
+        yield return new WaitForSeconds(4.99f);
+        
+        EntityInfo entityInfo = control.GetEntityInfo();
+
+        entityInfo.coroutine = null;    
+
+        entityInfo.currentState = EntityState.Idle;
+        control.ChangeState((int)EntityState.Idle);   
     }
 
 }

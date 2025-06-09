@@ -26,13 +26,17 @@ public class EventInjecter : MonoBehaviour
 
     private IEnumerator InjectStart()
     {
+        StageManager sm = StageManager.Instance;
+
         GameCondition.Instance.conditionEvent += gameOptionUi.ChangeOptionUi;
         GameCondition.Instance.conditionEvent += lobbyCam.ChangeLobbyScreen;
 
-        StageManager.Instance.stageEvent += battleCam.ChangeBattleScreen;
-        StageManager.Instance.stageEvent += player.OnStageMove;
-        StageManager.Instance.stageEvent += monsterFactory.CreateMonster;
+        sm.stageEvent += battleCam.ChangeBattleScreen;
+        sm.stageEvent += player.OnStageMove;
+        sm.stageEvent += monsterFactory.CreateMonster;
 
+        sm.stageEvent_End += battleCam.ChangeBattleScreen;
+        
         //StageManager.Instance. 스테이지를 돌리는 중 이벤트 필요
 
         statController.statChanged += playerStatUi.UpdateValueBar;

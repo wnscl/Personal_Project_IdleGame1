@@ -8,7 +8,10 @@ public interface IStateControl
 {
     public EntityInfo GetEntityInfo();
     public void ChangeState(int stateIndex);
+    public void UpdateState();
     public void GetDamage(float dmg);
+
+    public BaseState CheckState();
 
 }
 public enum EntityType
@@ -29,6 +32,8 @@ public class EntityInfo
     public BaseState[] states;
     public Animator anim;
     public EntityData info;
+
+    public EntityState currentState;
 
     public IStateControl control;
     public EntityType entityType;
@@ -59,6 +64,8 @@ public class EntityInfo
     }
     private void StatSetting()
     {
+        currentState = EntityState.Idle;
+
         maxHp = info.MaxHp;
         currentHp = maxHp;
         maxMp = info.MaxMp;
@@ -109,7 +116,6 @@ public class EntityController : MonoBehaviour, IStateControl
             GetComponentInChildren<Animator>(), 
             entityData, 
             this);
-
     }
     private void Start()
     {
@@ -126,25 +132,42 @@ public class EntityController : MonoBehaviour, IStateControl
     }
     public void ChangeState(int stateIndex)
     {
+        if (entityInfo.currentState == EntityState.Dead)
+        {
+            return;
+        }
+
+        if (entityInfo.coroutine != null)
+        {
+            StopCoroutine(entityInfo.coroutine);
+        }
+
         if (stateIndex > (entityInfo.states.Length - 1))
         {
             Debug.Log("존재하지 않는 상태에 접근 : states배열 인덱스문제");
             return;
         }
-
+        Debug.Log($"{entityInfo.entityType} {(EntityState)stateIndex} 실행");
         fsm.ChangeState(entityInfo.states[stateIndex]); //상태전환 명령전달
+        fsm.UpdateStata();
+    }
+    public void UpdateState()
+    {
         fsm.UpdateStata();
     }
     public void GetDamage(float dmg)
     {
         entityInfo.currentHp = Mathf.Clamp((entityInfo.currentHp - dmg), 0, entityInfo.maxHp);
-        Debug.Log(entityInfo.currentHp);
-
         if (entityInfo.currentHp <= 0)
         {
+            Debug.Log($"{entityInfo.entityType}사망");
             ChangeState((int)EntityState.Dead);
-            StageManager.Instance.ChangeStage();
+            StageManager.Instance.ChangeStage(entityInfo.control);
         }
+    }
+    public BaseState CheckState()
+    {
+        return fsm.CheckFsmState();
     }
     [Button]
     private void Test()

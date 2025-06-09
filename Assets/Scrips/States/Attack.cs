@@ -27,6 +27,7 @@ public class Attack : BaseState
     }
     private void InitAttack(bool isAttack)
     {
+        info.currentState = EntityState.Attack;
         attackType = 0;
         if (!isAttack)
         {

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e558940c41175ed4f9e6d72fceeb1a1b, type: 3}
   m_Name: TestMonsterData
   m_EditorClassIdentifier: 
-  maxHp: 100
+  maxHp: 20
   maxMp: 10
   atk: 10
-  attackSpeed: 2
+  attackSpeed: 0.4
   def: 1
   skillCount: 0
   canRevive: 0

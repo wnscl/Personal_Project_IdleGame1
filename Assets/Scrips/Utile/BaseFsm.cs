@@ -2,10 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-interface IFsm
-{
-    void ChangeState(BaseState nextState);
-}
+
 
 public class BaseFsm
 {
@@ -21,13 +18,17 @@ public class BaseFsm
         this.nextState = nextState;
         if (currentState == nextState) return;
 
-        currentState.Exit();
+        currentState?.Exit();
         currentState = this.nextState;
-        currentState.Enter();
+        currentState?.Enter();
 
     }
     public void UpdateStata()
     {
         currentState?.Update();
+    }
+    public BaseState CheckFsmState()
+    {
+        return currentState;
     }
 }
