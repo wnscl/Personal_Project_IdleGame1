@@ -5,8 +5,8 @@ using UnityEngine;
 
 public abstract class BaseState 
 {
-    protected StateInfo info; //상태들이 공통적으로 가져야 할 필드(모델)
-    protected BaseState(StateInfo info)
+    protected EntityInfo info; //상태들이 공통적으로 가져야 할 필드(모델)
+    protected BaseState(EntityInfo info)
     {
         this.info = info;
     }

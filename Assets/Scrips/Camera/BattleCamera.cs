@@ -14,13 +14,11 @@ public class BattleCamera : MonoBehaviour
 
     private Coroutine moveCor;
 
-    public BattleCameraState camState;
     public Stages stages;
 
     private void Awake()
     {
         nowStage = 0;
-        camState = BattleCameraState.Lock;
         stages = Stages.stage1;
     }
 

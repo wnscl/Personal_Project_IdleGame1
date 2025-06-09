@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -30,11 +31,11 @@ public class StageManager : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-
+        nowStage = Stages.stage1;
+        nextStage = Stages.stage2;
     }
 
-    public GameObject player;
-    public PlayerController playerController;
+    public EntityController playerController;
 
     [SerializeField] private Stages nowStage;
     public Stages NowStage { get { return nowStage; } }
@@ -46,19 +47,40 @@ public class StageManager : MonoBehaviour
     public event Action<Stages> stageEvent_Start;
     public event Action stageEvent_End;
 
+    public event Action<Stages> stageEvent;
 
+    public int stageCount;
+    public bool isStageRun = false;
+    public bool isFirstStart = true;
+
+    public GameObject player;
+    public GameObject enemy;
 
     [Button]
     public void ChangeStage()
     {
         StartCoroutine(OnStageChange());
     }
-
     public IEnumerator OnStageChange()
     {
-        stageEvent_Start.Invoke(nextStage);
+        isStageRun = false;
+        stageEvent?.Invoke(nextStage);
         yield return new WaitForSeconds(3f);
-        stageEvent_End.Invoke();
+
+        if (!isFirstStart)
+        {
+            stageCount++;
+            nowStage = (Stages)(stageCount % 4);
+            nextStage = (Stages)((stageCount + 1) % 4);
+        }
+    
+        isStageRun = true;
+
+        if (isFirstStart)
+        {
+            isFirstStart = false;
+        }
     }
+
 
 }

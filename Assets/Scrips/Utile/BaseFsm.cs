@@ -14,6 +14,7 @@ public class BaseFsm
     public void InitFsm(BaseState firstState)
     {
         currentState = firstState;
+        UpdateStata();
     }
     public void ChangeState(BaseState nextState)
     {

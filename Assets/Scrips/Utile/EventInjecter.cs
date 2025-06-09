@@ -12,7 +12,11 @@ public class EventInjecter : MonoBehaviour
     public LobbyCamera lobbyCam;
     public BattleCamera battleCam;
 
-    public PlayerController player;
+    public EntityController player;
+
+    public StatController statController;
+
+    public MonsterFactory monsterFactory;
 
     private void Start()
     {
@@ -25,10 +29,13 @@ public class EventInjecter : MonoBehaviour
         GameCondition.Instance.conditionEvent += gameOptionUi.ChangeOptionUi;
         GameCondition.Instance.conditionEvent += lobbyCam.ChangeLobbyScreen;
 
-        StageManager.Instance.stageEvent_Start += battleCam.ChangeBattleScreen;
-        StageManager.Instance.stageEvent_Start += player.OnStageReady;
+        StageManager.Instance.stageEvent += battleCam.ChangeBattleScreen;
+        StageManager.Instance.stageEvent += player.OnStageMove;
+        StageManager.Instance.stageEvent += monsterFactory.CreateMonster;
 
-        StageManager.Instance.stageEvent_End += player.OnStageDone;
+        //StageManager.Instance. 스테이지를 돌리는 중 이벤트 필요
+
+        statController.statChanged += playerStatUi.UpdateValueBar;
 
         yield return null;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Move : BaseState
 {
-    public Move(StateInfo info) : base(info) { }
+    public Move(EntityInfo info) : base(info) { }
 
     //public Coroutine
     public override void Enter()
@@ -13,19 +13,16 @@ public class Move : BaseState
     }
     public override void Update()
     {
-        switch (info.who) 
+        switch (info.entityType) 
         {
-            case WhoAmI.Player:
-                BehaviorManager.Instance.OnMoveToNextStage();
+            case EntityType.Player:
+                BehaviorManager.Instance.OnMoveToNextStage(info.control);
                 break;
 
-            case WhoAmI.Monster:
-
+            case EntityType.Monster:
+                info.control.ChangeState((int)EntityState.Idle);
                 break;
 
-            case WhoAmI.Boss:
-
-                break;
         }
     }
     public override void Exit()
