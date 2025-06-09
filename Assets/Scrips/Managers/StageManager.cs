@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
@@ -28,6 +29,8 @@ public class StageManager : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+
+
     }
 
     public GameObject player;
@@ -40,11 +43,22 @@ public class StageManager : MonoBehaviour
 
     public GameObject[] stages;
 
+    public event Action<Stages> stageEvent_Start;
+    public event Action stageEvent_End;
+
+
 
     [Button]
-    public void ddddd()
+    public void ChangeStage()
     {
+        StartCoroutine(OnStageChange());
+    }
 
+    public IEnumerator OnStageChange()
+    {
+        stageEvent_Start.Invoke(nextStage);
+        yield return new WaitForSeconds(3f);
+        stageEvent_End.Invoke();
     }
 
 }

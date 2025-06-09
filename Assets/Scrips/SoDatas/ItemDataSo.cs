@@ -7,7 +7,8 @@ public enum ItemType
     Weapon,
     Shield,
     Armour,
-    Acc
+    Acc,
+    Etc
 }
 
 [CreateAssetMenu(fileName = "Item Data So", menuName = "Scriptable Object/Item Data", order = 1)]
@@ -18,5 +19,6 @@ public class ItemDataSo : ScriptableObject
     public string itemName;
     public string itemDescription;
     public Sprite icon;
+    public string itemCount;
 
 }

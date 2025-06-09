@@ -44,7 +44,7 @@ public class GameCondition : MonoBehaviour
     public event Action nowBattle;*/
 
     public event Action<ScreenState> conditionEvent;
-
+   
     public void ChangeCondition(ScreenState nextState)
     {
         if (condition == nextState)

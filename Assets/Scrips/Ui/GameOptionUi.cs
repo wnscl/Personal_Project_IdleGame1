@@ -70,7 +70,7 @@ public class GameOptionUi : MonoBehaviour
         myCor = null;
         yield break;
     }
-    private void UnActiveAllUi()
+    private void UnActiveAllUi()    
     {
         foreach (var pair in panels)
         //딕셔너리를 foreach로 순회하면 key값, value값을 쌍으로 찾아낸다

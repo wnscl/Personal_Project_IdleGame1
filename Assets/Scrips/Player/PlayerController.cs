@@ -15,6 +15,12 @@ public enum WhoAmI
     Monster,
     Boss
 }
+public enum PlayerState
+{
+    Idle,
+    Move,
+    Attack
+}
 
 public class StateInfo
 {
@@ -92,6 +98,19 @@ public class PlayerController : MonoBehaviour, IStateControl
     {
         return playerInfo;
     }
+
+    public void OnStageReady(Stages stage)
+    {
+        ChangeState(1);
+        UpdateState();
+    }
+    public void OnStageDone()
+    {
+        ChangeState(0);
+        UpdateState();
+    }
+
+
     public void ChangeState(int stateIndex)
     {
         if (stateIndex > (playerInfo.states.Length - 1))
@@ -113,5 +132,6 @@ public class PlayerController : MonoBehaviour, IStateControl
         ChangeState(1);
         UpdateState();
     }
+
 
 }

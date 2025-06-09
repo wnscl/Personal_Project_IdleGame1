@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using NaughtyAttributes;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEditorInternal.VersionControl.ListControl;
 
 
 public class BattleCamera : MonoBehaviour
@@ -13,33 +14,56 @@ public class BattleCamera : MonoBehaviour
 
     private Coroutine moveCor;
 
-
     public BattleCameraState camState;
+    public Stages stages;
 
     private void Awake()
     {
         nowStage = 0;
         camState = BattleCameraState.Lock;
-    }
-
-    public void InjectBattleEvent(BattleCameraState order)
-    {
-        camState = order;
-        //CameraController.Instance.camEvent += ChangeCam;
+        stages = Stages.stage1;
     }
 
     [Button]
-    private void ChangeCam()
+    public void Test()
     {
-        if (moveCor != null)
-        {
-            return;
-        }
-        if (camState == BattleCameraState.Move)
-        {
-            //moveCor = StartCoroutine(moveCam(GetBattleCamPos(nowStage)));
-        }
+        ChangeBattleScreen(stages);
     }
+    public void ChangeBattleScreen(Stages stage)
+    //스크린 상태에 맞춘 메서드만 실행하는 구조로 확장해야함
+    {
+        if (moveCor != null) return;
+
+        int index = (int)stage; //카메라 앵커를 지정하기 위한 인덱스값
+
+        moveCor = StartCoroutine(MoveCam(index));
+    }
+    private IEnumerator MoveCam(int index)
+    {
+        float timer = 0;
+        Vector3 startPos = transform.position;
+        Quaternion startRot = transform.rotation;
+        Vector3 endPos = camAnchors[index].transform.position;
+        Quaternion endRot = camAnchors[index].transform.rotation;
+
+        while (timer <= moveDuration)
+        {
+            float t = timer / moveDuration;
+
+            transform.position = Vector3.Lerp(startPos, endPos, t);
+            //Mathf.Lerp로 하면 안됨 왜? 타입에 맞게 해야해서 이건 트렌스폼포지션을 바꾸니 벡터3로 하는게 맞음
+            transform.rotation = Quaternion.Lerp(startRot, endRot, t);
+            //마찬가지 타입에 맞는 자료형.lerp
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        transform.position = endPos;
+        transform.rotation = endRot;
+
+        moveCor = null;
+        yield break;
+    }
+
     //private PosAndRot GetBattleCamPos(int stageCount)
     //{
     //    PosAndRot nextPosRot;
@@ -59,7 +83,7 @@ public class BattleCamera : MonoBehaviour
     //    while (timer <= moveDuration)
     //    {
     //        float t = timer / moveDuration; // 0 → 1
-            
+
     //        transform.position = Vector3.Lerp(startPos, nextPosRot.pos, t);
     //        transform.rotation = Quaternion.Lerp(startRot, nextPosRot.rot, t);
     //        //시작점 -> 끝점 

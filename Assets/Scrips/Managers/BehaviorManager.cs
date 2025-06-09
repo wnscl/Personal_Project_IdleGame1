@@ -48,16 +48,19 @@ public class BehaviorManager : MonoBehaviour
         //방향벡터를 넘겨주는 게 아니라 이렇게
         //대상의 포지션 자체를 써야 레프가 제대로 작동
 
+        Vector3 endPos = Vector3.Lerp(startPos, targetPos, (6f / 7f));
+
+
         while (timer <= duration)
         {
             t = timer / duration;
 
-            requester.transform.position = Vector3.Lerp(startPos, targetPos, t);
+            requester.transform.position = Vector3.Lerp(startPos, endPos, t);
 
             timer += Time.deltaTime;
             yield return null;
         }
-        requester.transform.position = targetPos;
+        requester.transform.position = endPos;
 
         yield break;
     }
@@ -83,10 +86,6 @@ public class BehaviorManager : MonoBehaviour
     }
 
     public GameObject player;
-    public GameObject[] testObj;
-    [SerializeField] private Stages nowTestStage;
-    [SerializeField] private Stages nextTestStage;
-    public float testMoveDuration;
     [Button]
     public void TestCorStart()
     {
@@ -98,17 +97,17 @@ public class BehaviorManager : MonoBehaviour
     }
     public IEnumerator MoveToNextStage()
     {
-        Vector3 firstMovePos = CalculateHelper.GetDirection(testObj[(int)nowTestStage], player, Axis.Y);
-        Vector3 secondMovePos = CalculateHelper.GetDirection(testObj[(int)nextTestStage], player, Axis.Y);
+        Vector3 firstMovePos = CalculateHelper.GetDirection(StageManager.Instance.stages[(int)StageManager.Instance.NowStage], player, Axis.Y);
+        Vector3 secondMovePos = CalculateHelper.GetDirection(StageManager.Instance.stages[(int)StageManager.Instance.NextStage], player, Axis.Y);
 
         //1. 몸돌리기
-        yield return OnRotInTime(0.2f, player, CalculateHelper.GetRotation(player, firstMovePos));
+        yield return OnRotInTime(0.1f, player, CalculateHelper.GetRotation(player, firstMovePos));
         //2. 이동
-        yield return OnMoveInTime(0.4f, player, testObj[(int)nowTestStage], Axis.Y);    
+        yield return OnMoveInTime(0.3f, player, StageManager.Instance.stages[(int)StageManager.Instance.NowStage], Axis.Y);    
         //3. 몸돌리기
-        yield return OnRotInTime(0.2f, player, CalculateHelper.GetRotation(player, secondMovePos));
+        yield return OnRotInTime(0.1f, player, CalculateHelper.GetRotation(player, secondMovePos));
         //4. 이동
-        yield return OnMoveInTime(3f, player, testObj[(int)nextTestStage], Axis.Y);
+        yield return OnMoveInTime(2.5f, player, StageManager.Instance.stages[(int)StageManager.Instance.NextStage], Axis.Y);
 
         yield break;
     }
