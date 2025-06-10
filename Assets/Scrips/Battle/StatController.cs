@@ -6,6 +6,7 @@ using UnityEngine;
 public class StatController : MonoBehaviour
 {
     public event Action<IStateControl> statChanged;
+    public event Action<UpgadeNum> Upgade;
 
     public void InvokeStatUpdate(IStateControl control)
     {

@@ -39,14 +39,21 @@ public class MonsterFactory : MonoBehaviour
     }
     private IEnumerator SpawnMobInTime()
     {
-        yield return new WaitForSeconds(2.90f);
+        Debug.Log("¸÷ »ý¼º");
+        yield return new WaitForSeconds(2.95f);
         int stageCount = StageManager.Instance.stageCount;
-        if (stageCount / 4 == 0)
+        if ((stageCount % 4) == 0)
         {
+            Debug.Log($"{stageCount}");
             monsterPower.addHp += stageCount * 50f;
             monsterPower.addAtk += stageCount * 10f;
             monsterPower.addAs = Mathf.Clamp(monsterPower.addAs + (stageCount * 0.05f), 0, 3f);
             monsterPower.addDef += stageCount * 5f;
+
+            Debug.Log($"{monsterPower.addHp}\n" +
+                $"{monsterPower.addAtk}\n" +
+                $"{monsterPower.addAs}\n" +
+                $"{monsterPower.addDef}");
         }
 
         int monsterNum = UnityEngine.Random.Range(0, monsterPrefabs.Length);
@@ -84,6 +91,16 @@ public class MonsterFactory : MonoBehaviour
             nowStage.transform.position,
             angle, 
             this.transform);
+
+        IStateControl monsterControl = newMonster.GetComponent<IStateControl>();
+        EntityInfo monsterInfo = monsterControl.GetEntityInfo();
+
+        monsterInfo.UpdateEntityStat(false, monsterPower);
+
+        monsterPower.addHp = 0;
+        monsterPower.addAtk = 0;
+        monsterPower.addAs = 0;
+        monsterPower.addDef = 0;
 
         if (FindObjectOfType<EntityController>().gameObject.CompareTag("Enemy"))
         {

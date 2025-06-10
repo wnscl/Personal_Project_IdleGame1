@@ -10,9 +10,7 @@ public interface IStateControl
     public void ChangeState(int stateIndex);
     public void UpdateState();
     public void GetDamage(float dmg);
-
     public BaseState CheckState();
-
 }
 public enum EntityType
 {
@@ -147,7 +145,7 @@ public class EntityController : MonoBehaviour, IStateControl
             Debug.Log("존재하지 않는 상태에 접근 : states배열 인덱스문제");
             return;
         }
-        Debug.Log($"{entityInfo.entityType} {(EntityState)stateIndex} 실행");
+        //Debug.Log($"{entityInfo.entityType} {(EntityState)stateIndex} 실행");
         fsm.ChangeState(entityInfo.states[stateIndex]); //상태전환 명령전달
         fsm.UpdateStata();
     }

@@ -88,11 +88,19 @@ public class StageManager : MonoBehaviour
         nextStage = Stages.stage2;
         Destroy(enemy);
         stageEvent_End?.Invoke(nowStage);
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(2.5f);
         isStageRun = true;
         EntityInfo entityInfo = control.GetEntityInfo();
         entityInfo.currentHp = entityInfo.maxHp;
+        yield return new WaitForSeconds(2.5f);
         mobFactory.ResetMob();
     }
+
+    public void GiveGoldToPlayer()
+    {
+
+    }
+
+
 
 }

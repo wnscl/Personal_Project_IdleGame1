@@ -182,7 +182,6 @@ public class BehaviorManager : MonoBehaviour
             control.ChangeState((int)EntityState.Idle);
         }
 
-
         yield break;
     }
     public void OnReSpawn(IStateControl control)
@@ -197,7 +196,9 @@ public class BehaviorManager : MonoBehaviour
         
         EntityInfo entityInfo = control.GetEntityInfo();
 
-        entityInfo.coroutine = null;    
+        entityInfo.coroutine = null;
+
+        statControl.InvokeStatUpdate(control);
 
         entityInfo.currentState = EntityState.Idle;
         control.ChangeState((int)EntityState.Idle);   

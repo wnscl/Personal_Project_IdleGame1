@@ -21,6 +21,7 @@ public class PointUi : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        Debug.Log("¿¢½Ë");
         if (image != null)
         {
             image.color = originColor;

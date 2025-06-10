@@ -20,6 +20,8 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPoin
     [SerializeField] private ItemType slotType;
     [SerializeField] private bool isEquip;
 
+    private bool isPointerEnter = false;
+
     private void Awake()
     {
         previousColor = image.color;
@@ -28,6 +30,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPoin
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        //if (isPointerEnter)
+        //{
+        //    return;
+        //}
+
+        isPointerEnter = true;
+        Debug.Log($"æ∆¿Ã≈€ ΩΩ∑‘ ø£≈Õ {transform.parent.name}"); //
         if (image != null)
         {
             image.color = mouseOnColor;
@@ -35,6 +44,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IDropHandler, IPoin
     }
     public void OnPointerExit(PointerEventData eventData)
     {
+        //if (!isPointerEnter)
+        //{
+        //    return;
+        //}
+
+        isPointerEnter = false;
+        Debug.Log($"æ∆¿Ã≈€ ΩΩ∑‘ ø¢ΩÀ { transform.parent.name}");
         if (image != null)
         {
             image.color = previousColor;

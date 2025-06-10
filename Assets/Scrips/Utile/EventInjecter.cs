@@ -18,10 +18,13 @@ public class EventInjecter : MonoBehaviour
 
     public MonsterFactory monsterFactory;
 
+    public ResourceUi resourceUi;
+
     private void Start()
     {
         //필요한 메서드를 원하는 순서대로 주입 후 삭제
         StartCoroutine(InjectStart());
+        statController.InvokeStatUpdate(player);
     }
 
     private IEnumerator InjectStart()
@@ -33,10 +36,12 @@ public class EventInjecter : MonoBehaviour
 
         sm.stageEvent += battleCam.ChangeBattleScreen;
         sm.stageEvent += player.OnStageMove;
+        sm.stageEvent += resourceUi.UpdateResurce;
         sm.stageEvent += monsterFactory.CreateMonster;
 
         sm.stageEvent_End += battleCam.ChangeBattleScreen;
-        
+        sm.stageEvent_End += resourceUi.InitUi;
+
         //StageManager.Instance. 스테이지를 돌리는 중 이벤트 필요
 
         statController.statChanged += playerStatUi.UpdateValueBar;
